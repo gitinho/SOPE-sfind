@@ -12,6 +12,7 @@ Quando o utilizador carrega em CTRL+C, o programa interrompe qualquer operação
 #include <unistd.h>
 #include <stdio.h> 
 #include <string.h> 
+#include <stdbool.h>
 
 void sig_handler(int signo) 
 { 
@@ -68,23 +69,36 @@ int main(int argc, char *argv[])
     }
 
     int i;
-    char *path, *name;
-    char type;
-    int perm;
+    char *path, *name, *exec;
+    char type = ' ';
+    int perm = 0;
+    bool print = false;
+    bool delete = false;
+    exec = "null"; //needed for testing purposes
+    path = "null";
+    name = "null";
     
-    for (i = 2; i < argc; i+=2)
+    for (i = 2; i < argc; i++)
     {
-        if (strcmp(argv[i-1], "-path") == 0)
+        if (argv[i-1][0] != '-')
+            i++;
+        if (strcmp(argv[i-1], "-path") == 0 && argv[i][0] != '-')
             path = argv[i];
-        else if (strcmp(argv[i-1], "-name") == 0)
+        else if (strcmp(argv[i-1], "-name") == 0 && argv[i][0] != '-')
             name = argv[i];
-        else if (strcmp(argv[i-1], "-type") == 0)
+        else if (strcmp(argv[i-1], "-type") == 0 && argv[i][0] != '-')
             type = argv[i][0];
-        else if (strcmp(argv[i-1], "-perm") == 0)
+        else if (strcmp(argv[i-1], "-perm") == 0 && argv[i][0] != '-')
             perm = atoi(argv[i]);
+        else if (strcmp(argv[i-1], "-exec") == 0 && argv[i][0] != '-')
+            exec = argv[i];
+        else if (strcmp(argv[i-1], "-print") == 0 && delete == false)
+            print = true;
+        else if (strcmp(argv[i-1], "-delete") == 0 && print == false)
+            delete = true;
         else
         {
-            printf("invalid argument %s\n", argv[i]);
+            printf("Invalid argument \"%s\"\n", argv[i]);
             exit(1);
         }
     }
@@ -92,6 +106,9 @@ int main(int argc, char *argv[])
     printf("path: %s\n", path);
     printf("type: %c\n", type);
     printf("perm: %d\n", perm);
-    listdir(path, 0);
+    printf("exec: %s\n", exec);
+    printf("print: %d\n", print);
+    printf("delete: %d\n", delete);
+    //listdir(path, 0);
     return 0;
 }
