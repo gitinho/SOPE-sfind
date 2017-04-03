@@ -15,9 +15,11 @@ Quando o utilizador carrega em CTRL+C, o programa interrompe qualquer operação
 
 void sig_handler(int signo) 
 { 
-    char option = 'a';
-    printf("\nAre you sure you want to exit? (Y/N)\n");
-    scanf("%c", &option); 
+    char option;
+    printf("\nAre you sure you want to terminate? (Y/N)\n");
+    do {
+        scanf("%c", &option); 
+    } while (option != 'Y' && option != 'y' && option != 'N' && option != 'n');
     if (option == 'Y' || option == 'y')
         exit(1);
 }
@@ -90,6 +92,6 @@ int main(int argc, char *argv[])
     printf("path: %s\n", path);
     printf("type: %c\n", type);
     printf("perm: %d\n", perm);
-    //listdir(path, 0);
+    listdir(path, 0);
     return 0;
 }
